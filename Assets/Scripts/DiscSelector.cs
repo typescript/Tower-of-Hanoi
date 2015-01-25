@@ -7,17 +7,17 @@ public class DiscSelector : MonoBehaviour {
 	private SpriteRenderer discSprite;
 	private float nextPulse;
 	private int pulseDirection = -1;
-	private bool clicked = false;
+	private bool thisDiscIsSelected = false;
+    private static bool aDiscIsSelected = false;
 
 	// Use this for initialization
 	void Awake () {
 		discSprite = transform.GetComponent<SpriteRenderer>();
-		nextPulse = Time.time + pulseTime;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (clicked) {
+		if (thisDiscIsSelected) {
 			float r = discSprite.color.r;
 			float timeDiff = 1.0f * pulseDirection * Time.deltaTime / pulseTime;
 			r = r + timeDiff;
@@ -38,13 +38,17 @@ public class DiscSelector : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
-		clicked = !clicked;
+        Debug.Log(transform.name + " was clicked on.");
 
-		Debug.Log (transform.name + " was clicked.");
-		if (clicked) {
-			nextPulse = Time.time + pulseTime;
-		} else {
+        if (!aDiscIsSelected) { 
+		    thisDiscIsSelected = true;
+            nextPulse = Time.time + pulseTime;
+            aDiscIsSelected = true;
+            pulseDirection = -1;
+        } else if (aDiscIsSelected && thisDiscIsSelected) {
 			discSprite.color = Color.white;
-		}
+            aDiscIsSelected = false;
+            thisDiscIsSelected = false;
+        }
 	}
 }

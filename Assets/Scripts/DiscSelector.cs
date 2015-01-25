@@ -8,7 +8,12 @@ public class DiscSelector : MonoBehaviour {
 	private float nextPulse;
 	private int pulseDirection = -1;
 	private bool thisDiscIsSelected = false;
-    private static bool aDiscIsSelected = false;
+    private DiscController discController;
+
+    void Start()
+    {
+        discController = transform.GetComponentInParent<DiscController>();
+    }
 
 	// Use this for initialization
 	void Awake () {
@@ -38,17 +43,19 @@ public class DiscSelector : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
-        Debug.Log(transform.name + " was clicked on.");
-
-        if (!aDiscIsSelected) { 
+        if (!discController.isDiscSelected()) { 
 		    thisDiscIsSelected = true;
             nextPulse = Time.time + pulseTime;
-            aDiscIsSelected = true;
+            discController.setDiscSelected(transform.gameObject);
             pulseDirection = -1;
-        } else if (aDiscIsSelected && thisDiscIsSelected) {
-			discSprite.color = Color.white;
-            aDiscIsSelected = false;
-            thisDiscIsSelected = false;
+        } else if (discController.isDiscSelected() && thisDiscIsSelected) {
+            discController.setDiscSelected(null);
         }
 	}
+
+    public void StopPulse()
+    {
+        discSprite.color = Color.white;
+        thisDiscIsSelected = false;
+    }
 }

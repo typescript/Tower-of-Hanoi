@@ -19,14 +19,19 @@ public class SpawnDiscs : MonoBehaviour {
 			largeDisc = Instantiate(disc, startingPost.position - new Vector3(0, postHeight / 2 - discHeight / 2, 0), startingPost.rotation) as Transform;
 			largeDisc.name = "Large Disc";
 
+            largeDisc.parent = transform;
+
 			mediumDisc = Instantiate(disc, largeDisc.position + new Vector3(0, discHeight, 0), largeDisc.rotation) as Transform;
 			mediumDisc.localScale = largeDisc.localScale - new Vector3(discReduction, 0f, 0f);
 			mediumDisc.name = "Medium Disc";
 
+            mediumDisc.parent = transform;
 
 			smallDisc = Instantiate(disc, mediumDisc.position + new Vector3(0, discHeight, 0), mediumDisc.rotation) as Transform;
 			smallDisc.localScale = mediumDisc.localScale - new Vector3(discReduction, 0f, 0f);
 			smallDisc.name = "Small Disc";
+
+            smallDisc.parent = transform;
 		}
 	}
 	

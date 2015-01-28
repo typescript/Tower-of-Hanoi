@@ -6,6 +6,7 @@ public class DiscMover : MonoBehaviour {
     private float startTime;
     private float journeyLength;
     private Vector3[] targetPositions = new Vector3[3];
+    private GameObject topDisc = null;
     private int transitionIndex = 0;
     public float speed = 1.0f;
 
@@ -30,23 +31,55 @@ public class DiscMover : MonoBehaviour {
 
             if (transitionIndex >= targetPositions.Length)
             {
+                targetPost.GetComponent<PostMonitor>().SetTopDisc(transform.gameObject);
+                transform.gameObject.GetComponent<DiscSelector>().SetPost(targetPost);
                 targetPost = null;
+                topDisc = null;
             }
         }
 	}
 
     public void MoveToPost(GameObject targetPost) {
+        if (targetPost.GetComponent<PostMonitor>().HasTopDisc())
+        {
+            topDisc = targetPost.GetComponent<PostMonitor>().GetTopDisc();
+            Debug.Log("Current top disc: " + topDisc.name);
+        }
+
+        if (topDisc != null && (transform.GetComponent<SpriteRenderer>().bounds.size.x > topDisc.GetComponent<SpriteRenderer>().bounds.size.x) || topDisc == gameObject)
+        {
+            Debug.Log("Aborting movement since larger disc exists on post: " + targetPost.GetComponent<PostMonitor>().GetTopDisc().name);
+            targetPost.GetComponent<PostMonitor>().SetTopDisc(topDisc);
+            topDisc = null;
+            return;
+        }
+        transform.GetComponent<DiscSelector>().GetPost().GetComponent<PostMonitor>().PullTopDisc();
         this.targetPost = targetPost;
         this.transitionIndex = 0;
-        targetPositions[0] = new Vector3(transform.position.x, 
-            this.targetPost.transform.position.y + this.targetPost.GetComponent<SpriteRenderer>().bounds.size.y / 2 + transform.GetComponent<SpriteRenderer>().bounds.size.y, 
-            0);
-        targetPositions[1] = new Vector3(this.targetPost.transform.position.x, 
+        CalcMovement();
+        startTime = Time.time;
+    }
+
+    public void CalcMovement()
+    {
+        targetPositions[0] = new Vector3(transform.position.x,
             this.targetPost.transform.position.y + this.targetPost.GetComponent<SpriteRenderer>().bounds.size.y / 2 + transform.GetComponent<SpriteRenderer>().bounds.size.y,
             0);
-        targetPositions[2] = new Vector3(this.targetPost.transform.position.x,
-            this.targetPost.transform.position.y - this.targetPost.GetComponent<SpriteRenderer>().bounds.size.y / 2 + transform.GetComponent<SpriteRenderer>().bounds.size.y / 2, 
+        targetPositions[1] = new Vector3(this.targetPost.transform.position.x,
+            this.targetPost.transform.position.y + this.targetPost.GetComponent<SpriteRenderer>().bounds.size.y / 2 + transform.GetComponent<SpriteRenderer>().bounds.size.y,
             0);
-        startTime = Time.time;
+
+        if (topDisc == null)
+        {
+            targetPositions[2] = new Vector3(this.targetPost.transform.position.x,
+                this.targetPost.transform.position.y - this.targetPost.GetComponent<SpriteRenderer>().bounds.size.y / 2 + transform.GetComponent<SpriteRenderer>().bounds.size.y / 2,
+                0);
+        }
+        else
+        {
+            targetPositions[2] = new Vector3(this.targetPost.transform.position.x,
+                this.topDisc.transform.position.y + this.topDisc.GetComponent<SpriteRenderer>().bounds.size.y,
+                0);
+        }
     }
 }

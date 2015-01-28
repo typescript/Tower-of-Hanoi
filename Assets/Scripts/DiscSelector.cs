@@ -9,6 +9,7 @@ public class DiscSelector : MonoBehaviour {
 	private int pulseDirection = -1;
 	private bool thisDiscIsSelected = false;
     private DiscController discController;
+    private GameObject currentPost;
 
     void Start()
     {
@@ -57,5 +58,15 @@ public class DiscSelector : MonoBehaviour {
     {
         discSprite.color = Color.white;
         thisDiscIsSelected = false;
+    }
+
+    public GameObject GetPost()
+    {
+        return this.currentPost;
+    }
+
+    public void SetPost(GameObject currentPost)
+    {
+        this.currentPost = currentPost;
     }
 }

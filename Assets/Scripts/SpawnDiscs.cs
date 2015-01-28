@@ -32,11 +32,14 @@ public class SpawnDiscs : MonoBehaviour {
 			smallDisc.name = "Small Disc";
 
             smallDisc.parent = transform;
+
+            startingPost.GetComponent<PostMonitor>().SetTopDisc(largeDisc.gameObject);
+            startingPost.GetComponent<PostMonitor>().SetTopDisc(mediumDisc.gameObject);
+            startingPost.GetComponent<PostMonitor>().SetTopDisc(smallDisc.gameObject);
+
+            largeDisc.GetComponent<DiscSelector>().SetPost(startingPost.gameObject);
+            mediumDisc.GetComponent<DiscSelector>().SetPost(startingPost.gameObject);
+            smallDisc.GetComponent<DiscSelector>().SetPost(startingPost.gameObject);
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	}	
 }
